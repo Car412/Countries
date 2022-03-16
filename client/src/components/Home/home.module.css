@@ -1,0 +1,12 @@
+.contenedor{
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center; 
+    background-image: url('https://thumbs.dreamstime.com/b/viejo-fondo-en-blanco-del-mapa-69665765.jpg');
+}

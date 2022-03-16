@@ -7,6 +7,7 @@ import {
     ORDER_BY_NAME,
     ORDER_BY_POPULATION,
     POST_ACTIVITY,
+    GET_ACTIVITIES
 } from '../actions/index.js';
 
 const initialState = {
@@ -98,7 +99,12 @@ function rootReducer (state= initialState, action){
         case POST_ACTIVITY:
             return{
                 ...state
-            };                   
+            };  
+        case GET_ACTIVITIES:
+            return{
+                ...state,
+                activities: action.payload
+            }                 
         default:
             return state;    
     }

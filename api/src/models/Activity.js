@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('activity', {
     id:{
-      type: DataTypes.INTEGER,      
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     name: {

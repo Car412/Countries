@@ -8,6 +8,7 @@ export const FILTER_BY_ACTIVITY = 'FILTER_BY_ACTIVITY';
 export const ORDER_BY_NAME = 'ORDER_BY_NAME';
 export const ORDER_BY_POPULATION = 'ORDER_BY_POPULATION';
 export const POST_ACTIVITY = 'POST_ACTIVITY';
+export const GET_ACTIVITIES = 'GET_ACTIVITIES';
 
 // conexión con el back:
 
@@ -66,6 +67,16 @@ export function orderByPopulation(payload){
     return{
         type: ORDER_BY_POPULATION,
         payload
+    }
+}
+
+export function getActivities(){
+    return async function(dispatch){
+        var json = await axios.get('http://localhost:3001/activities')
+        return dispatch({
+            type: GET_ACTIVITIES,
+            payload: json.data
+        })
     }
 }
 
