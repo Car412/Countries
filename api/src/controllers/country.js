@@ -1,82 +1,76 @@
 const axios = require ('axios');
 const {Country, Activity}= require ('../db');
-const {Op}= require ('sequelize');
 
-//1ero: tarigo la info y la guardo 
+const getApi = async()=>{
+    const url = await axios.get('https://restcountries.com/v3/all')
+    const apiInfo = await url.data.map(el=>{
+        return{
+            id: el.cca3,
+            name: el.name.common,
+            flags: el.flags[0],
+            continents : el.continents[0],
+            capital: el.capital? el.capital[0] : 'capital not found',
+            subregion: el.subregion? el.subregion : 'subregion not found',
+            area: el.area,
+            population: el.population,
+        }
+    })
 
-async function getInfo (req, res){
-    try {
-        let urlApi = await axios.get('https://restcountries.com/v3/all');
-        urlApi.data.forEach( c=>{
-            Country.findOrCreate({
-                where:{
-                id: c.cca3,
-                name: c.name.common,
-                flags: c.flags[0],
-                continent: c.continents[0],
-                capital: c.capital? c.capital[0] : 'capital not found',
-                subregion: c.subregion? c.subregion : 'subregion not found',
+    apiInfo.forEach(c=>{
+        Country.findOrCreate({
+            where:{
+                id: c.id,
+                name: c.name,
+                flags: c.flags,
+                continents: c.continents,
+                capital: c.capital,
+                subregion: c.subregion,
                 area: c.area,
                 population: c.population,
             }
-            })            
         })
-        const infoApi = await Country.findAll({
-            include:{
-                model:Activity,
-                attributes: ['name', 'difficulty', 'duration', 'season'],
-                through:{
-                    attributes:[]
-                }
+    })
+    let all= await Country.findAll({
+        include:{
+            model: Activity,
+            attributes: ['name', 'difficulty', 'duration', 'season'],
+            through:{
+                attributes:[]
             }
-        })
-        return infoApi;
-    } catch (error) {
-        console.log(error)
-    }
-}
+        }
+    })
+    return all;
+};
 
-async function getById (req, res, next){
-    const {id} = req.params;
-    if(!id){
-        return res.status(404).json({message: 'Id required'})
-    }
+const getById = async (req, res)=>{
     try {
-        const country = await Country.findAll({
-            where:{
-                id: id,
-            },
-            include:{
-                model: Activity,
-                attributes: ['name', 'difficulty', 'duration', 'season'],
-                through:{
-                    attributes:[]
-                }
-            }
-        })
-        res.send(country);
+       const {id} = req.params;
+       let countryDetail = await Country.findByPk(id,{
+           attributes:['id', 'name', 'flags', 'continents', 'capital', 'subregion', 'area', 'population'],
+           include: Activity, 
+       }) 
+       countryDetail? 
+       res.send(countryDetail) :
+       res.send('Country not found')
     } catch (error) {
-        next(error)
+       res.send(error) 
     }
 };
 
-async function getByName (req, res){
+const getByName = async (req, res) =>{
     const {name} = req.query;
-    const info = await getInfo();
-    
+    const allNames = await getApi();
+
     if(name){
-        let countryName = info.filter(el=> el.name.toLowercase().includes(name.toLowercase()))
-        countryName.length?
-        res.status(200).send(countryName) :
-        res.status(404).send("Country doesn't exists");
-    }else{
-        res.status(200).send(info);
+        let nameCountry = await allNames.filter(c=> c.name.toLowerCase().includes(name.toLowerCase()))
+        nameCountry.length?
+        res.status(200).send(nameCountry) :
+        res.status(404).send('Country noot found')
     }
+    return res.send(allNames)
 };
 
-
-module.exports  = {
-    getInfo,
+module.exports  = {    
     getById,
     getByName,
 }

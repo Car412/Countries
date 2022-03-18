@@ -1,20 +1,39 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
-import { getCountries, getActivities, filterByActivity,filterByContinent, orderByName, orderByPopulation } from "../../actions";
+import { getCountries, getActivity, filterByActivity,filterByContinent, orderByName, orderByPopulation } from "../../actions";
 import SearchBar from '../SearchBar/searchBar';
-import {estilos} from './home.module.css'
+import Paginado from "../Paginado/paginado";
+import Card from "../Card/card";
+import {estilos} from './home.module.css';
 
 export default function Home(){
     const dispatch = useDispatch();
     const allCountries = useSelector(state=> state.countries);
     const allActivities = useSelector(state=> state.activities);
 
+    //Paginado: página actual
+    const [currentPage, setCurrentPage] = useState(1)
+    //Paises por página
+    const [countiresPerPage, setCountriesPerPage] = useState(9)
+    const [order, setOrder]= useState('')
+
+    //último país
+    const lastCountry = currentPage * countiresPerPage
+    //primer país
+    const firstCountry = lastCountry - countiresPerPage
+
+    const currentCountries = allCountries.slice(firstCountry, lastCountry)
+
+    const paginado = (pageNumber)=>{
+        setCurrentPage(pageNumber)
+    }
+
     useEffect (()=>{
         dispatch(getCountries())
-        dispatch(getActivities())
-    },[dispatch])
+        dispatch(getActivity())
+    },[dispatch, order])
 
     function handleClick(e){
         e.preventDefault();
@@ -77,6 +96,29 @@ export default function Home(){
                     </select>
                 </div>    
                 </div>
+                <div>
+                    {currentCountries?.map(el=>{
+                        return(
+                            <Fragment>
+                                <Link to={'/countries/' + el.id}
+                                key={'l' + el.id}>
+                                    <Card
+                                    key={el.id}
+                                    id={el.id}
+                                    img={el.flags}
+                                    name={el.name}                                    
+                                    />
+                                </Link>
+                            </Fragment>
+                        )
+                    })}
+                </div>
+                <Paginado
+            key={1}
+            countriesPerPage={countiresPerPage}
+            allCountries={allCountries}
+            paginado={paginado}
+            />
             </div>
         </div>
     )

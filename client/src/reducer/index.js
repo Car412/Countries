@@ -7,7 +7,7 @@ import {
     ORDER_BY_NAME,
     ORDER_BY_POPULATION,
     POST_ACTIVITY,
-    GET_ACTIVITIES
+        GET_ACTIVITY
 } from '../actions/index.js';
 
 const initialState = {
@@ -37,19 +37,21 @@ function rootReducer (state= initialState, action){
                 detail: action.payload
             };
         case FILTER_BY_CONTINENT:
+            const countries1 = state.allCountries;
+            const filterContinent = action.payload === 'All'? countries1 : countries1.filter(el=> el.continents[0] === action.payload)
             return{
                 ...state,
-                allCountries: state.countries.filter(el=> el.continent === action.payload)
+                countries: filterContinent
             };
         case FILTER_BY_ACTIVITY:
-            const allCountries = state.allCountries
-            const filterActivity = action.payload === 'All'? allCountries : [...allCountries]?.filter(el=> el.activities?.includes(action.payload))
+            const countries2 = state.allCountries;
+            const filterActivity = action.payload === 'All'? countries2 : countries2.filter(el=> el.activities.includes(action.payload))
             return{
                 ...state,
                 countries: filterActivity          
             };
         case ORDER_BY_NAME:
-            let sort = action.payload === 'asc'?
+            let sort = action.payload === 'Asc'?
             state.countries.sort(function (a,b){
                 if(a.name>b.name){
                     return 1;
@@ -73,7 +75,7 @@ function rootReducer (state= initialState, action){
                 countries: sort
             };
         case ORDER_BY_POPULATION:
-            let popSort = action.payload === 'high'?
+            let popSort = action.payload === 'High'?
             state.countries.sort(function(a,b){
                 if(a.population>b.population){
                     return 1
@@ -100,7 +102,7 @@ function rootReducer (state= initialState, action){
             return{
                 ...state
             };  
-        case GET_ACTIVITIES:
+        case GET_ACTIVITY:
             return{
                 ...state,
                 activities: action.payload

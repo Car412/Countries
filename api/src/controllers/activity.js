@@ -1,27 +1,42 @@
 const {Activity, Country} =  require ('../db');
 
-async function createActivity(req, res, next){
-    const {id, name, difficulty, duration, season} = req.body;
+const createActivity = async (req, res)=>{
+    const {name, difficulty, duration, season, countries} = req.body;
     try {
        const newActivity= await Activity.create({
-            id,
             name,
             difficulty,
             duration,
             season,
        }) 
-
-       const country = await  Country.findAll({
-        where:{id: id,}
-       })
-       newActivity.addCountries(country);
-       res.send({message: 'Activity created'})
+       countries?.forEach(async (c)=>{
+           const country = await Country.findOne({
+               where:{
+                   name:c,
+               }
+           })
+           await newActivity.addCountry(country)
+       });
+       res.status(200).send('Activity created')
     } catch (error) {
-        next(error);
+        res.send(error)
     }
 
 };
 
+const getActivity = async (req, res)=>{
+    try {
+        const db = await Activity.findAll({
+            attributes: ['name'],
+            include: Country,
+        }) 
+        res.send(db)
+    } catch (error) {
+        res.send(error)
+    }
+}
+
 module.exports ={
     createActivity,
+    getActivity,
 }
