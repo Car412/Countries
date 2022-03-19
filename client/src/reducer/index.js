@@ -7,7 +7,7 @@ import {
     ORDER_BY_NAME,
     ORDER_BY_POPULATION,
     POST_ACTIVITY,
-        GET_ACTIVITY
+    GET_ACTIVITY
 } from '../actions/index.js';
 
 const initialState = {
@@ -28,8 +28,7 @@ function rootReducer (state= initialState, action){
         case GET_BY_NAME:
                 return{
                     ...state,
-                    countries: action.payload,
-                    allCountries: action.payload
+                    countries: action.payload,                
                 };
         case GET_DETAIL:
             return{
@@ -38,14 +37,16 @@ function rootReducer (state= initialState, action){
             };
         case FILTER_BY_CONTINENT:
             const countries1 = state.allCountries;
-            const filterContinent = action.payload === 'All'? countries1 : countries1.filter(el=> el.continents[0] === action.payload)
+            const filterContinent = action.payload === 'All'? countries1 : 
+            countries1.filter(el=> el.continents === action.payload)
             return{
                 ...state,
                 countries: filterContinent
             };
         case FILTER_BY_ACTIVITY:
             const countries2 = state.allCountries;
-            const filterActivity = action.payload === 'All'? countries2 : countries2.filter(el=> el.activities.includes(action.payload))
+            const filterActivity = action.payload === 'All'? countries2 : 
+            countries2.filter(el=> el.activities.includes(action.payload))
             return{
                 ...state,
                 countries: filterActivity          

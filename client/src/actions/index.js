@@ -10,6 +10,7 @@ export const ORDER_BY_POPULATION = 'ORDER_BY_POPULATION';
 export const POST_ACTIVITY = 'POST_ACTIVITY';
 export const GET_ACTIVITY = 'GET_ACTIVITY';
 
+//conexion con el back:
 
 export function getCountries(){
     return async function (dispatch){
@@ -23,7 +24,7 @@ export function getCountries(){
 
 export function getByName(name){
     return async function (dispatch){
-        let info = await axios.get("http://localhost:3001/countries?name="+name)
+        let info = await axios.get(`http://localhost:3001/countries?name=${name}`);
         return dispatch ({
             type: 'GET_BY_NAME',
             payload : info.data
@@ -33,11 +34,15 @@ export function getByName(name){
 
 export function getDetail(id){
     return async function (dispatch){
-        let info = await axios.get("http://localhost:3001/countries/"+id)
-        return dispatch ({
-            type: 'GET_DETAIL',
-            payload: info.data
-        })
+        try {
+            let info = await axios.get(`http://localhost:3001/countries/${id}`);
+            return dispatch({
+                type: 'GET_DETAIL',
+                payload: info.data,
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
@@ -69,19 +74,26 @@ export function orderByPopulation(payload){
     }
 }
 
-export function getActivity(){
+export function getActivity(payload){
     return async function(dispatch){
-        let info = await axios.get("http://localhost:3001/activity")
-        return dispatch({
-            type: 'GET_ACTIVITY',
-            payload: info.data
-        })
+        try {
+            let info = await axios.get('http://localhost:3001/activities');
+            return dispatch({
+                type:'GET_ACTIVITY',
+                payload: info.data,
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 
 export function postActivity(payload){
     return async function (dispatch){
-        let info = await axios.post("http://localhost:3001/activity", payload)
-        return info;
+        let info = await axios.post("http://localhost:3001/activities", payload);
+        return dispatch({
+            type: 'POST_ACTIVITY',
+            payload: info.data,
+        })
     }
 }

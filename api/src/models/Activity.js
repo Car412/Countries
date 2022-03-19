@@ -4,6 +4,11 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('activity', {
+    id:{
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     name: {
       type: DataTypes.STRING,      
     },
@@ -11,7 +16,7 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('1', '2', '3', '4', '5')
     },
     duration:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.TIME,
     },
     season:{
         type: DataTypes.ENUM('summer', 'fall', 'spring', 'winter')
