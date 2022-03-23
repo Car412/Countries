@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('country', {
     id:{
-      type: DataTypes.STRING,
+      type: DataTypes.STRING,      
       allowNull: false,
       primaryKey: true,
     },
@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     continents:{
-      type: DataTypes.ENUM('South America', 'North America','Europe','Africa', 'Asia','Oceania'),
+      type: DataTypes.ENUM('South America', 'North America','Europe','Africa', 'Asia','Oceania', 'Antartica'),
       allowNull:false,
     },
     capital:{

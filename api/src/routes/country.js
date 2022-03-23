@@ -1,78 +1,88 @@
 const {Router} = require('express');
-const {Country, Activity} = require ('../db');
+const {Country, Activity} = require ('../db'); // los requiero desde la db porque es donde se hace la conexion con sequelize
 const axios = require ('axios');
-
 const router = Router();
+const {Sequelize, Op} = require ('sequelize');
 
-// 1ero: Agrego la info de la api a la bd
-const getApi = async()=>{
-try {
-    const url = await axios.get('https://restcountries.com/v3/all')
-    const apiInfo = url.data.map(el=>{
-        return{
-            id: el.cca3,
-            name: el.name.common,
-            flags: el.flags[0],
-            continents : el.continents[0],
-            capital: el.capital? el.capital[0] : 'capital not found',
-            subregion: el.subregion? el.subregion : 'subregion not found',
-            area: el.area,
-            population: el.population,
-        }
-    })
-    return apiInfo;
-} catch (error) {
-    console.log(error)
-}
-}
-// busco, sino, creo:
-
-router.get('/', async (req, res)=>{
-    const {name} = req.query
-    const countriesBD = await Country.findAll()
-
+const getApi = async ()=>{
     try {
-        if(!countriesBD.length) {
-            let infoCountries = await getApi()
-            await Country.bulkCreate(infoCountries)
-            const countriesBD = await Country.findAll()
-
-            if (name) {
-                let countriesName = countriesBD.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
-                if(countriesName === undefined) {
-                    return res.status(404).send('Country not found')
-                } else {
-                    return res.json(countriesName) 
-                }
-            } else {
-                return res.json(countriesBD) 
+        const urlApi = await axios.get("https://restcountries.com/v3/all");
+        const dataApi = urlApi.data?.map(async (c)=>{
+            try {
+                await Country.findOrCreate({
+                    where:{
+                        id: c.cca3,
+                    },
+                    defaults:{
+                        id: c.cca3,
+                        name: c.name.common,
+                        flags: c.flags[0],
+                        continents: c.continents[0],
+                        capital: c.capital? c.capital[0] : 'capital not found',
+                        subregion: c.subregion? c.subregion : 'subregion not found',
+                        area: c.area,
+                        population: c.population,
+                    }
+                });
+                return dataApi;
+            } catch (error) {
+               console.log(error) 
             }
-        } 
+        });
     } catch (error) {
         console.log(error)
     }
-})
+};
 
-router.get('/:id', async (req, res)=>{
-    const {id} = req.params;
-    const countryBD = await Country.findAll({
-        include:{
-            model: Activity
-        }
-    })
+router.get("/", async (req, res)=>{
+    await getApi();
+    const {name} = req.query;
     try {
-        if(id){
-            let countryId = countryBD.find(c=> c.id === id);
-            if(countryId === undefined){
-                return res.status(404).send('Country not found')
-            }else{
-                return res.json(countryId)
-            }
+        if(name){
+            const countryName = await Country.findAll({
+                where:{
+                    name: {[Op.iLike] : `%${name}%`},
+                },
+                include: Activity,
+            });
+            countryName.length?
+            res.status(200).send(countryName) :
+            res.status(404).send('Country not found');
+        }else{
+            const allCountries = await Country.findAll({
+                include: [
+                    {
+                        model: Activity,
+                    }
+                ]
+            });
+            return res.status(200).send(allCountries);
         }
+    } catch (error) {   
+       console.log(error)
+       return res.status(404).send(error) 
+    }
+});
+
+router.get("/:id", async (req, res)=>{
+    await getApi();
+    const {id} = req.params;
+    try {
+        const countryId = await Country.findOne({
+            where:{
+                id: id.toUpperCase()
+            },
+            include:{
+                model: Activity,
+            }
+        });
+        countryId.length?
+        res.status(200).send(countryId) :
+        res.status(404).send('Country not found')
     } catch (error) {
         console.log(error)
+        return res.status(404).send(error) 
     }
 })
 
 module.exports = router;
-
