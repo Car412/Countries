@@ -1,57 +1,87 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
-import {postActivity, getCountries} from '../actions';
+import {getCountries, getActivity, postActivity} from '../actions';
 import {useDispatch, useSelector} from 'react-redux';
+import estilos from './createActivity.module.css';
 
 const validacion = (input) =>{
-    let errors = {};
-    if(!input.name){
-        errors.name = 'name is required'
-    }
-    if(!input.difficulty){
-        errors.difficulty = 'required input'
-    }
-    if(input.duration < 1){
-        errors.duration = 'invalid duration'
-    }
-    if (!input.season){
-        errors.season = 'season is required'
-    }
-    return errors;
-};
+  let errors = {};
+  if (!input.name) {
+      errors.name = "Name is required";
+  }
+  if (!input.difficulty) {
+      errors.difficulty = "Difficulty is required";
+  }
+  if (!input.duration) {
+      errors.duration = "Between 30 and 180 minutes";
+  }
+  if (!input.season) {
+      errors.season = "Season is required";
+  }
+  if (!input.countries) {
+      errors.countries = "Add at least one country";
+  }
+  return errors;
+}
 
-export default function CreateActivity(){
-    const dispatch = useDispatch()
-    const countries = useSelector((state)=> state.countries)
-    const [errors, setErrors] = useState({})
-    const [input, setInput] = useState({
-        name: '',
-        difficulty: '',
-        duration: '',
-        season: '',
-        countries: [],
-    })    
+export default function CreateActivity() {
+  const dispatch = useDispatch();  
+  const countries = useSelector((state) => state.countries); //guardo los paises en la ctte
+  
+  const [input, setInput] = useState({ // guarda la info de la activity a crear
+    name: "",
+    difficulty: "",
+    duration: "",
+    season: "",    
+    countries: [],
+  });
 
-function handleChange(e){
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    dispatch(getActivity());
+    dispatch(getCountries());
+  }, [dispatch]);
+
+  const handleInputChange = function (e) {
+    e.preventDefault();
     setInput({
-        ...input,
-        [e.target.name] : e.target.value
+      ...input,
+      [e.target.name]: e.target.value,
     });
-    setErrors(validacion({
-        ...input,
-        [e.target.name] : e.target.value
-    }))
-}
+    setErrors(validacion({...input, [e.target.name]: e.target.value}));
+  };
 
-function handleSelect(e){
+  const handleSelect = function (e){
+    if(!input.countries.includes(e.target.value)){
+      setInput({
+        ...input,
+        countries: [...input.countries, e.target.value],
+      });
+    } else alert ('This country was already chosen')
+  }
+
+  const handleCheck = (e) =>{
+    if(e.target.checked){
+      setInput({
+        ...input,
+        [e.target.name] : e.target.value,
+      });
+      setErrors(validacion({
+        ...input, [e.target.name] : e.target.value
+      }))
+    }
+  };
+
+  const handleDelete = (e) =>{
     setInput({
-        ...input,
-        countries: [...input.countries, e.target.value]
+      ...input,
+      countries: input.countries.filter(country=> country !== e)
     })
-}
+  }
 
-function handleSubmit(e){
+  const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(postActivity(input))
     alert('Activity created successfully')
@@ -59,72 +89,151 @@ function handleSubmit(e){
         name: '',
         difficulty: '',
         duration: '',
-        season: '',
-        countries: []
+        population: '',
+        countries: [],
     })
 }
 
-useEffect(()=>{
-    dispatch(getCountries())
-})
+  return (
+    <div className={estilos.contenedor}>
+      <h1 className={estilos.h1}>Create your own activity</h1>
+      <form className={estilos.form} onSubmit={handleSubmit}>
+        <div className={estilos.label}>
+          <label>Name: </label>
+          <input
+            type="text"
+            name="name"
+            value={input.name}
+            onChange={handleInputChange}
+            autoComplete="off"
+            required
+          />
+        {errors.name && (
+          <p className={estilos.error}>{errors.name}</p>
+        )}  
+        </div>
+        <div className={estilos.label}>
+          <label>Difficulty: </label>
+            <select name='difficulty' value={input.difficulty}onChange={handleInputChange}>
+            <option value=""></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            </select>
+            {errors.difficulty && (
+             <p className={estilos.error}>{errors.difficulty}</p>
+        )}
+        </div>
+        <div className={estilos.label}>
+          <label>Duration: </label>
+          <input
+            type="number"
+            name="duration"
+            value={input.duration}
+            onChange={handleInputChange}
+            autoComplete="off"
+            required
+            min="30"
+            max="180"
+          />
+          {errors.duration && (
+            <p className={estilos.error}>{errors.duration}</p>
+        )}
+        </div>
+        <div className={estilos.label}>
+          <label>Season: </label>
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="season"
+                value="Summer"
+                onChange={(e) => handleCheck(e)}
+              />
+              Summer
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="season"
+                value="Autumn"
+                onChange={(e) => handleCheck(e)}
+              />
+              Autumn
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="season"
+                value="Winter"
+                onChange={(e) => handleCheck(e)}
+              />
+              Winter
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="season"
+                value="Spring"
+                onChange={(e) => handleCheck(e)}
+              />
+              Spring
+            </label>
+          </div>
+        </div> 
+        {errors.season && (
+          <p className={estilos.error}>{errors.season}</p>
+      )}       
+        <div className={estilos.label}>
+          <label>Countries: </label>
+          <select onChange={handleSelect}>
+            <option value="all">Countries</option>
+            {countries.map((c) => (
+              <option key={c.id} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          {errors.countries && (
+            <p className={estilos.error}>{errors.countries}</p>
+          )}
+        </div>
+        <div>     
+        {input.countries.map(country =>{
+            return(
+              <div key={country} className={estilos.div}>
+                <h5>{country}</h5>
+                <button onClick={()=>handleDelete(country)}
+                className={estilos.boton2}
+                >x</button>
+              </div>
+            )
+          })} 
+        </div>
+        <div className={estilos.botones}>
+          <button className={estilos.boton1} type="submit" onClick={handleSubmit}>
+            Create
+          </button>
 
-return(
-    <div>
-        <h1>Create Activity</h1>
-        <nav>
-            <form onSubmit={(e)=> handleSubmit(e)}>
-                <div>
-                    <label>Name: </label>
-                    <input required type='text' placeholder='name' name='name' value={input.name} onChange={(e)=> handleChange(e)}/>
-                    {errors.name && (<p>{errors.name}</p>)}
-                </div>
-                <div>
-                    <label>Difficulty: </label>
-                    <select required name='difficulty' value={input.difficulty} onChange={(e)=> handleChange(e)}>
-                        <option value= '' selected disabled>Difficulty</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    {errors.difficulty && (<p>{errors.difficulty}</p>)}
-                </div>
-                <div>
-                    <label>Duration: </label>
-                    <input required type='time' name='duration' value={input.duration} onChange={(e)=> handleChange(e)}/>
-                    {errors.duration && (<p>{errors.duration}</p>)}
-                </div>
-                <div>
-                    <label>Season: </label>
-                    <select required name='season' value={input.season} onChange={(e)=> handleChange(e)}>
-                        <option value= '' selected disabled>Season</option>
-                        <option>Autumn</option>
-                        <option>Winter</option>
-                        <option>Spring</option>
-                        <option>Summer</option>
-                    </select>
-                    {errors.season && (<p>{errors.season}</p>)}
-                </div>
-                <div>
-                    <div>
-                        <label>Countries: </label>
-                        <select onChange={(e)=> handleSelect(e)}>
-                            <option selected= 'false' disabled>Select country</option>
-                            {countries.map((e)=>(
-                                <option value={e.id}>{e.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <button type='submit'>Create</button>
-                        <Link to= '/home'>
-                            <button>Back</button>
-                        </Link>                    
-                </div>
-            </form>
-        </nav>
+          <Link to ='/home'>
+            <button className={estilos.boton1}>Back</button>
+          </Link>
+        </div>
+      </form>
     </div>
-)
+  );
 }
+        
+        
+
+
+
+
+
+                       
+                                      
+                    
+                
+

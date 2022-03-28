@@ -8,13 +8,13 @@ import {store} from './store/index';
 import {BrowserRouter} from 'react-router-dom';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>  
+        <App />
+      </Provider>
     </BrowserRouter>
-  </Provider>,
+  </React.StrictMode>,
   document.getElementById('root')
 );
 

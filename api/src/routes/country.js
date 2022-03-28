@@ -70,15 +70,15 @@ router.get("/:id", async (req, res)=>{
     try {
         const countryId = await Country.findOne({
             where:{
-                id: id.toUpperCase()
+                id: id.toUpperCase(),
             },
             include:{
                 model: Activity,
             }
         });
-        countryId.length?
-        res.status(200).send(countryId) :
-        res.status(404).send('Country not found')
+        !countryId
+        ? res.status(404).send('Country not found')
+        : res.status(200).send(countryId) 
     } catch (error) {
         console.log(error)
         return res.status(404).send(error) 

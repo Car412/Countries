@@ -1,19 +1,19 @@
 import './App.css';
 import {Route, Routes} from 'react-router-dom';
-import Landing from './components/LandingPage/landingPage';
-import Home from './components/Home/home.jsx';
-import Detail from './components/Detail/detail.jsx';
-import CreateActivity from './components/CreateActivity/createActivity.jsx';
+import LandingPage from './components/landingPage';
+import Home from './components/home';
+import GetDetail from './components/detail.jsx';
+import CreateActivity from './components/createActivity.jsx';
 
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route exact path='/' element={<Landing/>}/>
-        <Route path='/home' element={<Home/>}/>
-        <Route path='/activity' element={<CreateActivity/>}/>
-        <Route exact path='/home/:id' element={<Detail/>}/>
+        <Route exact path='/' element={<LandingPage/>}/>
+        <Route exact path='/home' element={<Home/>}/>
+        <Route exact path='/create' element={<CreateActivity/>}/>
+        <Route exact path='/details/:id' element={<GetDetail/>}/>
       </Routes>
     </div>
   );

@@ -1,0 +1,30 @@
+.nav{
+    display: inline-block;
+}
+
+.div{
+    border-radius: 3px;
+    border-color: antiquewhite;
+    padding: 7px 14px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.boton{
+    background-color:honeydew;
+    color: rgb(60, 71, 235);
+    font-weight: lighter;
+    display: flex;
+    border-radius: 50%;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.boton:hover{
+    background-color: rgb(60, 71, 235);
+    color: honeydew;
+}

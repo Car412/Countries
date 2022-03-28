@@ -1,0 +1,45 @@
+.contenedor{
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;   
+    background-image: url('https://i.pinimg.com/originals/84/bc/14/84bc14a0d8168451ec4798e7325bac74.jpg');
+    
+}
+
+.h1{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-shadow: 1px 1px 2px black, 0 0 1em rgba(99, 99, 240, 0.808), 0 0 0.2em rgb(61, 61, 243);
+    color: rgba(219, 205, 243, 0.979);
+    font-size: 55px;
+    top: 1px;    
+}
+
+.select{
+    margin: 5px 5px;
+    padding: 5px 5px;
+    font-size: large;
+    color: #5f5e99;
+    border: 1px solid #5f5e99;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav{
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    justify-content: center;
+}
+
+.card{
+    display: flex;
+    flex-direction:row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}

@@ -28,17 +28,17 @@ router.post("/activity", async (req, res)=>{
     }
 });
 
-/* router.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
     let activities = [];
-    return Activities.findAll()
-      .then((acts) => {
-        acts.forEach((act) => activities.push(act.name));
+    return Activity.findAll()
+      .then((act) => {
+        act.forEach((a) => activities.push(a.name));
         res.send(activities);
       })
       .catch((error) => {
         res.status(404).send(error);
       });
-  }); */
+  });
   
   module.exports = router;
 

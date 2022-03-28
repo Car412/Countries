@@ -1,52 +1,63 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {getDetail} from '../actions';
+import {getDetail, resetDetail} from '../actions';
 import { useEffect } from 'react';
+import estilos from './detail.module.css';
 
-export default function GetDetail(props){
+
+export default function GetDetail(){
     const dispatch = useDispatch();
-
-    useEffect(()=>{
-        dispatch(getDetail(props.match.params.id))
-    })
-
+    const {id} = useParams();
     const myCountry = useSelector((state)=> state.detail)
 
-    return(
+    useEffect(()=>{
+        dispatch(resetDetail())
+        dispatch(getDetail(id))
+    },[dispatch]) //eslint-disable-line    
+
+return(
+    <div className={estilos.contenedor}>        
         <div>
-            {myCountry?
             <div>
-                <img src={myCountry.flags} alt='img'/>
-                <h1>{myCountry.name}</h1>
-                <div>
-                    <div>
-                        <h3>Id: {myCountry.id}</h3>
-                        <h3>Continent: {myCountry.continents}</h3>
-                        <h3>Capital: {myCountry.capital}</h3>
-                        <h3>Subregion: {myCountry.subregion}</h3>
-                        <h3>Area: {myCountry.area}</h3>
-                        <h3>Population: {myCountry.population}</h3>
-                        <Link to= '/home'><button>Return</button></Link>
-                    </div>
-                    <div>
-                        {myCountry.activities && myCountry.activities.length?
-                        myCountry.activities.map(el=>
-                            <li><span>{el.name}</span>
-                            <p>Difficulty: <span>{el.difficulty}</span></p>
-                            <p>Duration: <span>{el.duration}</span></p>
-                            <p>Season: {el.season}</p>
-                            </li>
-                            ) :
-                            <h3>No activities</h3>
-                    }
-                    </div>
-                </div>
-            </div>    :
-            <div>
-                <p>Loading...</p>
+                <img src={myCountry.flags} alt='flag' className={estilos.flag}/>
             </div>
-        }
+            <div>
+                <h1 className={estilos.h1}>{myCountry.name}</h1>
+                <div className={estilos.h2}>
+                <h2>{myCountry.id}</h2>    
+                <h2>Continent: {myCountry.continents}</h2>
+                <h2>Capital: {myCountry.capital}</h2>
+                <h2>Subregion: {myCountry.subregion}</h2>
+                <h2>Area: {myCountry.area} km²</h2>
+                <h2>Population: {myCountry.population}</h2>
+                </div>
+            </div>
         </div>
-    )
-}
+        <div>
+            {
+                myCountry.activities && (
+                    myCountry.activities.length === 0?(
+                        <div>
+                            <p className={estilos.h2}>No activities created</p>
+                        </div>
+                    ) : (
+                        myCountry.activities.map((a)=>(
+                            <div className={estilos.h4}>
+                                <h3>Activity: {a.name}</h3>
+                                <h4>Difficulty: {a.difficulty}</h4>
+                                <h4>Duration: {a.duration} minutes</h4>
+                                <h4>Season: {a.season}</h4>
+                            </div>
+                        ))
+                    )
+                )
+            }
+            <div className={estilos.div}>            
+            <Link to='/home'>
+            <button className={estilos.boton}>Back</button>
+        </Link>
+        </div>
+        </div>
+    </div>
+)};

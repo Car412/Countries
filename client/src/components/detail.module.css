@@ -1,0 +1,60 @@
+.contenedor{
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(209, 135, 243);
+  background-position-x: center;
+  background-position-y: center; 
+  background-color: transparent;
+  padding-top: 15px;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://i.pinimg.com/originals/3b/eb/53/3beb5307d0741b7152f1d45da40426a9.jpg');
+}
+
+h1{
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 25px;
+  font: italic;
+  text-shadow: 1px 1px 2px rgb(243, 226, 226), 0 0 1em rgba(39, 39, 53, 0.808), 0 0 0.2em rgb(99, 99, 121);
+}
+
+.h2{
+    font-size: 14px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: rgba(15, 15, 17, 0.644);
+}
+
+.boton{
+    border: 1,5 solid rgba(27, 23, 23, 0.815);
+    color: rgb(60, 71, 235);
+    background-color: white;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: medium;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 21px;
+}
+
+.boton:hover{
+    color:white;
+    background-color:rgb(60, 71, 235);
+}
+
+.flag{
+    border-radius: 15px;
+    opacity: 90%;
+    max-width:300px;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;    
+    align-items: center;
+    justify-content: center;
+}
+
+.div{
+  align-items: center;
+  justify-content: space-between;
+}
+

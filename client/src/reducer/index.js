@@ -5,16 +5,17 @@ import {
     FILTER_BY_CONTINENT,
     FILTER_BY_ACTIVITY,
     ORDER_BY_NAME,
-    ORDER_BY_POPULATION,
-    POST_ACTIVITY,
-    GET_ACTIVITY
+    ORDER_BY_POPULATION,    
+    GET_ACTIVITY,
+    RESET_DETAIL,
+    RESET_STATE,
 } from '../actions/index.js';
 
 const initialState = {
     countries: [], // contiene todos los paises
     allCountries: [], // copia de "countries" para que, al hacer cambios, no me modifique el estado con el total de la info
-    activities: [],
-    detail: [],
+    activity: [],
+    detail: {},
 }
 
 function rootReducer (state= initialState, action){
@@ -38,79 +39,71 @@ function rootReducer (state= initialState, action){
         case FILTER_BY_CONTINENT:
             const countries1 = state.allCountries;
             const filterContinent = action.payload === 'All'? countries1 : 
-            countries1.filter(el=> el.continents === action.payload)
+            countries1.filter((el)=> el.continents === action.payload)
             return{
                 ...state,
-                countries: filterContinent
+                countries: filterContinent,
             };
         case FILTER_BY_ACTIVITY:
             const countries2 = state.allCountries;
             const filterActivity = action.payload === 'All'? countries2 : 
-            countries2.filter(el=> el.activities.includes(action.payload))
+            countries2.filter((el)=> el.activities && el.activities.map((e)=>e.name).includes(action.payload))
             return{
                 ...state,
-                countries: filterActivity          
+                countries: filterActivity,          
             };
         case ORDER_BY_NAME:
-            let sort = action.payload === 'Asc'?
+            const nameSort = action.payload === 'AZ'?
             state.countries.sort(function (a,b){
-                if(a.name>b.name){
-                    return 1;
-                }
-                if(b.name>a.name){
-                    return -1
-                }
+                if(a.name > b.name) return 1;
+                if(a.name < b.name) return -1;
                 return 0;
             }) :
             state.countries.sort(function(a,b){
-                if(a.name>b.name){
-                    return -1;
-                }
-                if(b.name>a.name){
-                    return 1;
-                }
-                return 0
+                if(a.name > b.name) return -1;
+                if(a.name < b.name) return 1;
+                return 0;
             });
             return{
                 ...state,
-                countries: sort
+                countries: nameSort,
             };
         case ORDER_BY_POPULATION:
-            let popSort = action.payload === 'High'?
+            const popSort = action.payload === 'Low'?
             state.countries.sort(function(a,b){
-                if(a.population>b.population){
-                    return 1
-                }
-                if (b.population> a.population){
-                    return -1
-                }
-                return 0
+                if(a.population > b.population) return 1;
+                if(a.population < b.population) return -1;
+                return 0;
             }) :
             state.countries.sort(function(a,b){
-                if(a.population>b.population){
-                    return -1
-                }
-                if(b.population>a.population){
-                    return 1
-                }
-                return 0
+                if(a.population > b.population) return -1;
+                if(a.poopulation < b.population) return 1;
+                return 0;
             })
             return{
                 ...state,
-                countries: popSort
+                countries: popSort,
             };
-        case POST_ACTIVITY:
-            return{
-                ...state
-            };  
+  
         case GET_ACTIVITY:
             return{
                 ...state,
-                activities: action.payload
-            }                 
+                activity: action.payload,            
+            };
+        case RESET_STATE: 
+        return{
+            ...state,
+            detail: {},
+        };
+        case RESET_DETAIL:
+            return{
+                ...state,
+                detail: {},
+            }                    
         default:
-            return state;    
+            return state;   
     }
 }
 
 export default rootReducer;
+
