@@ -14,7 +14,8 @@ export default function GetDetail(){
     useEffect(()=>{
         dispatch(resetDetail())
         dispatch(getDetail(id))
-    },[dispatch]) //eslint-disable-line    
+    },[dispatch, id]) //eslint-disable-line    
+
 
 return(
     <div className={estilos.contenedor}>        
@@ -34,26 +35,25 @@ return(
                 </div>
             </div>
         </div>
-        <div>
+        <div className={estilos.divAct}>
             {
-                myCountry.activities && (
-                    myCountry.activities.length === 0?(
-                        <div>
-                            <p className={estilos.h2}>No activities created</p>
+               myCountry.hasOwnProperty('activities') ? myCountry.activities.map(activity => (
+                        <div key={activity.id}>
+                          <h2>Activity:  {activity.name}</h2>
+                          <h4>Difficulty:{activity.difficulty}, Season: {activity.season}</h4>
+                          <h4>Duration: {activity.duration} minutes</h4>                             
                         </div>
-                    ) : (
-                        myCountry.activities.map((a)=>(
-                            <div className={estilos.h4}>
-                                <h3>Activity: {a.name}</h3>
-                                <h4>Difficulty: {a.difficulty}</h4>
-                                <h4>Duration: {a.duration} minutes</h4>
-                                <h4>Season: {a.season}</h4>
-                            </div>
-                        ))
-                    )
-                )
-            }
-            <div className={estilos.div}>            
+                      ))                     
+                    
+                    : (
+                         
+                    <div>
+                      <p>No activities</p>
+                    </div>
+                  )
+                  }
+            
+        <div className={estilos.div}>            
             <Link to='/home'>
             <button className={estilos.boton}>Back</button>
         </Link>

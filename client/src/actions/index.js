@@ -138,7 +138,7 @@ export function postActivity(payload){
         let info = await axios.post("http://localhost:3001/activity", payload);
         return dispatch({
             type: POST_ACTIVITY,
-            payload: info,
+            payload: info.data,
         })
     }
 };

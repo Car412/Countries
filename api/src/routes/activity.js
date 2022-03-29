@@ -3,23 +3,23 @@ const {Country, Activity} = require ('../db');
 const {Sequelize} = require ('sequelize');
 const router = Router();
 
-router.post("/activity", async (req, res)=>{
+router.post("/", async (req, res)=>{
     try {
         const {name, difficulty, duration, season, countries} = req.body;
         if(name && difficulty && duration && season) {
-            const newActivity = await Activity.create({
+            const newActivity = await Activity.create({ // creo la act
                 name,
                 difficulty,
                 duration,
                 season,
             });
             countries.forEach(async (c)=>{
-                const dbCountry = await Country.findOne({
+                const countryActivity = await Country.findOne({ //reviso el arr de countries para ver en cuál se crea la actividad
                     where:{
-                        id:c,
+                        name:c,
                     }
                 });
-                await newActivity.addCountry(dbCountry);
+                await newActivity.addCountry(countryActivity);
             });
             res.status(200).send(newActivity);
         }
@@ -28,17 +28,14 @@ router.post("/activity", async (req, res)=>{
     }
 });
 
-router.get("/", async (req, res) => {
-    let activities = [];
-    return Activity.findAll()
-      .then((act) => {
-        act.forEach((a) => activities.push(a.name));
-        res.send(activities);
-      })
-      .catch((error) => {
-        res.status(404).send(error);
-      });
-  });
+router.get('/', async (req,res) => {
+    try {
+        let activities = await Activity.findAll()
+        res.status(200).send(activities)
+    } catch (error) {
+        console.log(error)
+    }
+})
   
   module.exports = router;
 

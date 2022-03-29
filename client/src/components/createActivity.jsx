@@ -83,6 +83,7 @@ export default function CreateActivity() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(input);
     dispatch(postActivity(input))
     alert('Activity created successfully')
     setInput({
@@ -97,14 +98,14 @@ export default function CreateActivity() {
   return (
     <div className={estilos.contenedor}>
       <h1 className={estilos.h1}>Create your own activity</h1>
-      <form className={estilos.form} onSubmit={handleSubmit}>
+      <form className={estilos.form} onSubmit={(e)=>handleSubmit(e)}>
         <div className={estilos.label}>
           <label>Name: </label>
           <input
             type="text"
             name="name"
             value={input.name}
-            onChange={handleInputChange}
+            onChange={(e)=>handleInputChange(e)}
             autoComplete="off"
             required
           />
