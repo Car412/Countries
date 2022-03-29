@@ -5,7 +5,8 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('activity', {
     name: {
-      type: DataTypes.STRING,     
+      type: DataTypes.STRING, 
+      allowNull: false,    
       unique: true, 
     },
     difficulty:{

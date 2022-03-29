@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getDetail, resetDetail} from '../actions';
 import { useEffect } from 'react';
 import estilos from './detail.module.css';
-
+import {Loading} from './loadingDetail';
 
 export default function GetDetail(){
     const dispatch = useDispatch();
@@ -16,10 +16,14 @@ export default function GetDetail(){
         dispatch(getDetail(id))
     },[dispatch, id]) //eslint-disable-line    
 
+if(!myCountry.name){
+    return <Loading/>
+} else{ 
 
-return(
-    <div className={estilos.contenedor}>        
-        <div>
+
+return(    
+    <div className={estilos.contenedor}>               
+        <div>            
             <div>
                 <img src={myCountry.flags} alt='flag' className={estilos.flag}/>
             </div>
@@ -60,4 +64,4 @@ return(
         </div>
         </div>
     </div>
-)};
+)} };

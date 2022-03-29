@@ -11,13 +11,7 @@ import estilos from './home.module.css';
 export default function Home(){
     const dispatch = useDispatch()
     const allCountries = useSelector((state)=> state.countries)
-    const activities = useSelector((state)=> state.activities)
-
-    useEffect(()=>{ // traigo toda la info
-        dispatch(resetDetail());
-        dispatch(getCountries());
-        dispatch(getActivity());
-    }, [dispatch])
+    const allActivities = useSelector((state)=> state.activities)
 
     //estados locales para el paginado    
     const [orden, setOrden] = useState('') // eslint-disable-next-line
@@ -31,7 +25,14 @@ export default function Home(){
 
     const paginado = (pageNumber)=>{
         setCurrentPage(pageNumber)
-    }    
+    } 
+    
+    useEffect(()=>{ // traigo toda la info        
+        dispatch(resetDetail())
+        dispatch(getCountries());
+        dispatch(getActivity());        
+    }, [dispatch])
+
 
     function handleNameSort(e){
         e.preventDefault();
@@ -51,15 +52,13 @@ export default function Home(){
         dispatch(filterByContinent(e.target.value))
     }
 
-    function handleFilterAct(e){
-        e.preventDefault();
-        dispatch(filterByActivity(e.target.value))
-        setCurrentPage(1);
+    function handleFilterAct(e){        
+        dispatch(filterByActivity(e.target.value))        
     }
 
     return(
         <div className={estilos.contenedor}>
-            <h1 className={estilos.h1}>Contries of the World</h1>
+            <h1 className={estilos.h1}>Contries App</h1>
             <div>
                     <SearchBar/>
                 </div>            
@@ -85,12 +84,12 @@ export default function Home(){
                         <option value="South America">South America</option>                        
                     </select>
                     <select onChange={(e)=> handleFilterAct(e)} className={estilos.select}>
-                        <option value='All'>All activities</option>
-                        {activities?.map((el)=> {
-                            return(
-                                <option key={el.id} value={el.name}>{el.name}</option>
-                            )
-                        })}
+                        <option value= 'All'>All</option>
+                        {
+                            allActivities && allActivities.map(activity=>(
+                                <option value={getActivity.name}>{activity.name}</option>
+                            ))
+                        }
                     </select>
                 </div>
                 <div>
@@ -104,7 +103,7 @@ export default function Home(){
             countriesPerPage={countriesPerPage} 
             allCountries={allCountries?.length} 
             paginado={paginado}/>
-            </div>          
+            </div>        
             
             <div>
                 <div className={estilos.card} >
@@ -119,10 +118,10 @@ export default function Home(){
                                     key={el.id}/>
                                 </Link>
                             </div>
-                        )
+                        )                        
                     }) 
-                }
-                </div>             
+                }                
+                </div>          
                 
             </div>
         </div>

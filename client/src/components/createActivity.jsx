@@ -27,8 +27,8 @@ const validacion = (input) =>{
 
 export default function CreateActivity() {
   const dispatch = useDispatch();  
-  const countries = useSelector((state) => state.countries); //guardo los paises en la ctte
-  
+  const countries = useSelector((state) => state.countries); //guardo los paises en la ctte    
+
   const [input, setInput] = useState({ // guarda la info de la activity a crear
     name: "",
     difficulty: "",
@@ -148,7 +148,7 @@ export default function CreateActivity() {
           <div>
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="season"
                 value="Summer"
                 onChange={(e) => handleCheck(e)}
@@ -157,7 +157,7 @@ export default function CreateActivity() {
             </label>
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="season"
                 value="Autumn"
                 onChange={(e) => handleCheck(e)}
@@ -166,7 +166,7 @@ export default function CreateActivity() {
             </label>
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="season"
                 value="Winter"
                 onChange={(e) => handleCheck(e)}
@@ -175,7 +175,7 @@ export default function CreateActivity() {
             </label>
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="season"
                 value="Spring"
                 onChange={(e) => handleCheck(e)}

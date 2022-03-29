@@ -8,6 +8,7 @@ import {
     ORDER_BY_POPULATION,    
     GET_ACTIVITY,
     POST_ACTIVITY,
+    LOADING,
     RESET_DETAIL,
     RESET_STATE,
 } from '../actions/index.js';
@@ -15,7 +16,7 @@ import {
 const initialState = {
     countries: [], // contiene todos los paises
     allCountries: [], // copia de "countries" para que, al hacer cambios, no me modifique el estado con el total de la info
-    activity: [],
+    activities: [],
     detail: {},
 }
 
@@ -47,11 +48,13 @@ function rootReducer (state= initialState, action){
             };
         case FILTER_BY_ACTIVITY:
             const countries2 = state.allCountries;
-            const filterActivity = action.payload === 'All' ? countries2 : countries2.filter(e=> e.activity.includes(action.payload))
-            return {
-                ...state,
-                countries: filterActivity
-            }
+            const filterActivity = action.payload === 'All'? countries2 :
+            countries2.filter(country=>
+                country.activities && country.activities.map(e=> e.name).includes(action.payload))
+                return{
+                    ...state,
+                    countries: filterActivity,
+                }
         case ORDER_BY_NAME:
             const nameSort = action.payload === 'AZ'?
             state.countries.sort(function (a,b){
@@ -88,7 +91,7 @@ function rootReducer (state= initialState, action){
         case GET_ACTIVITY:
             return{
                 ...state,
-                activity: action.payload,            
+                activities: action.payload,            
             };
         case POST_ACTIVITY:
             return{
@@ -103,7 +106,12 @@ function rootReducer (state= initialState, action){
             return{
                 ...state,
                 detail: {},
-            }                    
+            }    
+        case LOADING:
+            return{
+                ...state,
+                countries: action.payload ? [] : state.countries,
+            }                
         default:
             return state;   
     }
