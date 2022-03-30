@@ -87,7 +87,7 @@ export default function Home(){
                         <option value= 'All'>All</option>
                         {
                             allActivities && allActivities.map(activity=>(
-                                <option value={activity.name}>{activity.name}</option>
+                                <option key={activity.name}value={activity.name}>{activity.name}</option>
                             ))
                         }
                     </select>

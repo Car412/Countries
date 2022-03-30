@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {getCountries, getActivity, postActivity} from '../actions';
 import {useDispatch, useSelector} from 'react-redux';
 import estilos from './createActivity.module.css';
 
-const validacion = (input) =>{
+const validacion = (input, activities) =>{  
   let errors = {};
   if (!input.name) {
       errors.name = "Name is required";
@@ -28,6 +28,8 @@ const validacion = (input) =>{
 export default function CreateActivity() {
   const dispatch = useDispatch();  
   const countries = useSelector((state) => state.countries); //guardo los paises en la ctte    
+  //const activities = useSelector((state)=> state.activities);
+  const navigate = useNavigate();
 
   const [input, setInput] = useState({ // guarda la info de la activity a crear
     name: "",
@@ -93,7 +95,8 @@ export default function CreateActivity() {
         population: '',
         countries: [],
     })
-}
+    navigate('/home')
+};
 
   return (
     <div className={estilos.contenedor}>
